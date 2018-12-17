@@ -1,15 +1,19 @@
 package org.patric.webmagic.demon2;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.monitor.SpiderMonitor;
 import us.codecraft.webmagic.processor.PageProcessor;
 
+import javax.management.JMException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -34,6 +38,11 @@ public class WeiXinPaqu implements PageProcessor {
         //使用css选择器，获取到指定dom元素的下的所有图片url链接地址
         List<String> imgSrc = (List<String>)page.getHtml().$("[data-copyright='0']", "data-src").all();
 
+        if(Objects.isNull(imgSrc)){
+            //设置skip之后，这个页面的结果不会被Pipeline处理
+            page.setSkip(true);
+        }
+
         //通过xpath定位元素，并输出标签文本内容
         List<String> content = (List<String>)page.getHtml().xpath("section/p/html()").all(); //或者text()
         String html = page.getHtml().toString();
@@ -56,11 +65,15 @@ public class WeiXinPaqu implements PageProcessor {
     }
 
     /*4.爬取*/
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JMException {
         /*添加爬取的url链接，开启5个线程爬取*/
         Spider spider = Spider.create(new WeiXinPaqu())
                 .addUrl("https://mp.weixin.qq.com/s/nrfOyt9jlUzwlCmqI0dnRA")
                 .thread(5);
+
+        //添加监控器，你可以查看爬虫的执行情况——已经下载了多少页面、还有多少页面、启动了多少线程等信息。
+        // 该功能通过JMX实现，你可以使用Jconsole等JMX工具查看本地或者远程的爬虫信息。
+        SpiderMonitor.instance().register(spider);
         /*爬虫启动*/
         spider.run();
     }
