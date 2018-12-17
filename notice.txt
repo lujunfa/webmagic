@@ -1,0 +1,12 @@
+对于较大的爬虫程序，可能还要定制downloader和scheduler组件
+
+Scheduler是WebMagic中进行URL管理的组件。一般来说，Scheduler包括两个作用：
+对待抓取的URL队列进行管理。
+对已抓取的URL进行去重。
+WebMagic内置了几个常用的Scheduler。如果你只是在本地执行规模比较小的爬虫，那么基本无需定制Scheduler，但是了解一下已经提供的
+几个Scheduler还是有意义的。
+
+
+
+WebMagic的默认Downloader基于HttpClient。一般来说，你无须自己实现Downloader，不过HttpClientDownloader也预留了几个扩展点，以满足不同场景的需求。
+另外，你可能希望通过其他方式来实现页面下载，例如使用SeleniumDownloader来渲染动态页面。

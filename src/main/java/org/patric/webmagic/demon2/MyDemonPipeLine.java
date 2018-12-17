@@ -11,7 +11,22 @@ import java.util.Map;
 
 /**
  * @Author: lujunfa  2018/12/17 16:27
+ *将数据持久层写在pipeline
+ */
+
+/**
+ * @Component("JobInfoDaoPipeline")
+ * public class JobInfoDaoPipeline implements PageModelPipeline<LieTouJobInfo> {
  *
+ *     @Resource
+ *     private JobInfoDAO jobInfoDAO;
+ *
+ *     @Override
+ *     public void process(LieTouJobInfo lieTouJobInfo, Task task) {
+ *         //调用MyBatis DAO保存结果
+ *         jobInfoDAO.add(lieTouJobInfo);
+ *     }
+ * }
  */
 public class MyDemonPipeLine implements Pipeline {
     Logger logger = LoggerFactory.getLogger(MyDemonPipeLine.class);
